@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+	<head>
+	<meta charset="utf-8">
+	<title>Memory Pair Game</title>
+ 	<style type="text/css">
+ 	body,html{padding:0; margin:0; border:none; outline:none; box-sizing: border-box; width:100%; height:100%;}
+ 	div.container{max-width:100%; width:960px; height:100%; margin:0 auto; position:relative; background:#ccc;}
+ 	#memoryPair , .scroing{background:#2980b9; order:2px solid #ccc; width:576px; height:576px; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);}
+ 	.cube{background:#1abc9c; border:2px solid #000; width:80px; height:80px; float:left; margin:10px; padding:20px; font-size:80px;cursor:pointer; text-align:center; color:#fff;}
+ 	.cube:hover{box-shadow: inset 0 0 0 10px #2980b9;}
+ 	.btnDv{width:140px; margin:0 auto;}
+ 	.btn{cursor:pointer; background:#d35400; color:#fff;font-size:16px; padding:12px 8px; display: inline-block; margin-top:20px;   text-transform: uppercase; letter-spacing: 1px; font-weight: 700; outline: none;border: 4px solid #d35400;}
+    .btn:hover{background: transparent;color:#d35400;}
+    .scroing{margin:350px 0 0 0;width:140px;height:40px;background: #d35400;transform: translate(-80% -50%;);font-size:24px;line-height: 40px;color:#fff;padding:4px 6px;text-align: center;}
+ 	</style>
+ 	
+	</head>
+	<body>
+	<div class="container">		
+		<div id="memoryPair"></div>
+		<div class="btnDv" onclick="newTile()"><button class="btn">New Game</button></div>
+		<div class="scroing">Score  :  <span id="score"></span> </div>
+	</div>	
+   <script language="JavaScript" type="text/javascript" >
+   		var memoryArray = ['A','A','B','B','C','C','D','D','E','E','F','F','G','G','H','H']; //tile memory array
+   		var memoryVal = [];
+   		var memoryTileId = [];
+   		var memoryFlippedTile = 0;
+   		var x = 0;
+   		document.getElementById('score').innerHTML = x;
+
+   		//Shuffle Array (including the memoryArray) 
+   		Array.prototype.shuffleAll = function(){
+   			var i = this.length , j , temp ;
+   			while(--i > 0)
+   				{
+   				 j = Math.floor(Math.random() * (i+1));
+   				 temp=this[j];
+   				 this[j]=this[i];
+   				 this[i]=temp;
+   				}   				
+   		}
+
+   		// creating tiles 
+   		function newTile(){
+   			x=0;
+   			document.getElementById('score').innerHTML = x;
+   			memoryFlippedTile=0;
+   			var tileOutput='';
+   			memoryArray.shuffleAll();
+   			for(var i = 0; i < memoryArray.length; i++){
+   				tileOutput +='<div id="tile'+i+'" class="cube" onclick="memoryTileFlip(this,\''+memoryArray[i]+'\')"></div>'; 
+   			}
+   			document.getElementById('memoryPair').innerHTML = tileOutput ;
+   		}
+         
+         function memoryTileFlip(tile,val){
+         	if(tile.innerHTML == '' && memoryVal.length < 2)
+         	{
+         		// assigning the array values to flip side 
+
+         		tile.style.background= "#000";
+         		tile.innerHTML = val;
+         		if(memoryVal.length == 0){
+         			memoryVal.push(val);
+         			memoryTileId.push(tile.id);
+         		}
+         		else if(memoryVal.length == 1)
+         		{
+         			memoryVal.push(val);
+         			memoryTileId.push(tile.id);
+         			if(memoryVal[0] == memoryVal[1])
+         			{
+         				memoryFlippedTile += 2;
+         				// clears both array
+         				memoryVal = [];
+         				memoryTileId = [];
+         				//Displaying count
+         				x += 10;
+         				document.getElementById('score').innerHTML = x;
+         				//check to see if the board is cleared 
+         				if(memoryFlippedTile == memoryArray.length){
+         					alert("Board Cleared , To Generate New Board click on New Game");
+         					document.getElementById('memoryPair').innerHTML == '';
+         					//newTile();
+         				}
+         			} else {
+         				// Flip the tiles back
+         				function flipTileBack(){
+         					var tile1 = document.getElementById(memoryTileId[0]);
+         					var tile2 = document.getElementById(memoryTileId[1]);
+         					x -= 5;
+         				   document.getElementById('score').innerHTML = x;
+         					tile1.style.background = '#1abc9c';
+         					tile1.innerHTML='';
+         					tile2.style.background = '#1abc9c';
+         					tile2.innerHTML='';
+
+         					//clear both arrays
+         					memoryVal = [];
+         				   memoryTileId = [];
+         				}
+         				setTimeout(flipTileBack,800);
+         			}
+
+         		}
+         	}
+
+
+         }
+   </script>
+<script type="text/javascript"> newTile(); </script>
+	</body>
+</html>
